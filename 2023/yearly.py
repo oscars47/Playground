@@ -17,9 +17,10 @@ from itertools import permutations # to get permutations
 # 4 is /
 # 5 is ^ (**)
 # we reserve 0 for no operation
-operations = list(range(1, 5, 1))
+operations = list(range(1, 6, 1))
 
-input = str(input('Enter a year (e.g., 2023)'))
+# input = str(input('Enter a 4-digit year (e.g., 2023)'))
+input='2023'
 # convert to list of integers
 input_ls = [int(c) for c in input]
 
@@ -27,6 +28,26 @@ t0 = time.time() # start the clock
 
 input_perm = list(permutations(input_ls)) # get permutations of input number
 
+# initialize lists holding operations which we will permute
+# 0 indicates no operation, -1 indicates an operation yet to be determined
+p0 = [0 for i in range(len(input))]
+p0[0]=-1
+p1 = [0 for i in range(len(input))]
+p1[0]=p1[1]=-1
+p2 = [0 for i in range(len(input))]
+p2[0]=p2[1]=p2[2]=-1
+p3 = [-1 for i in range(len(input))]
+p3[-1]=0
+p4 = [-1 for i in range(len(input))]
+# add them all to list; don't include p4 though since we don't want permutations on a vector of all the same entries
+p_3 = [p0, p1, p2, p3]
+
+# perform permuations
+p_perm = [list(permutations(p)) for p in p_3]
+p_perm.append([tuple(p4)])
+# print(p_perm)
+# print(len(p_perm))
+# print(len(p_perm[1]))
 
 
 
