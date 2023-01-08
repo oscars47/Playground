@@ -42,12 +42,27 @@ p4 = [-1 for i in range(len(input))]
 # add them all to list; don't include p4 though since we don't want permutations on a vector of all the same entries
 p_3 = [p0, p1, p2, p3]
 
-# perform permuations
+# perform position permuations
 p_perm = [list(permutations(p)) for p in p_3]
 p_perm.append([tuple(p4)])
 # print(p_perm)
 # print(len(p_perm))
 # print(len(p_perm[1]))
+
+# now figure out possible operations, the integers to be used in the calcultations, and the final answer
+# for the first two, we use list of list of tuples; for the value, just list of lists of integer
+operations_perm = []
+int_order = []
+int_value = []
+
+# custom function to calculate operation perms
+def get_op_perms()
+
+for i, p in enumerate(p_perm):
+    operations_temp= list(permutations(operations, i+1)) # list to hold the operations tuples. permute in groups of size = number of operations
+    operations_perm.append(operations_temp)
+
+print(operations_perm[-1])
 
 
 
