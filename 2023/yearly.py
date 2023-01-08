@@ -55,14 +55,21 @@ operations_perm = []
 int_order = []
 int_value = []
 
+print(p_perm[0][0][0])
+
 # custom function to calculate operation perms
-def get_op_perms()
+# def get_op_perms(p_ls, r): # takes in current p list and r parameter (size of groups)
+#     for p_tuples in p_ls: # get all tuples in p
+#         for p_tuple in p_tuples: # iterate through each p_tuple
+#             for j, p in p_tuple: # iterate through each element in p_tuple
+#             # if 1st index of p_tuple is 
 
-for i, p in enumerate(p_perm):
-    operations_temp= list(permutations(operations, i+1)) # list to hold the operations tuples. permute in groups of size = number of operations
-    operations_perm.append(operations_temp)
 
-print(operations_perm[-1])
+# for i, p in enumerate(p_perm):
+#     operations_temp= list(permutations(operations, i+1)) # list to hold the operations tuples. permute in groups of size = number of operations
+#     operations_perm.append(operations_temp)
+
+# print(operations_perm[-1])
 
 
 
