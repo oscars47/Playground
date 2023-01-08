@@ -18,6 +18,7 @@ from itertools import permutations # to get permutations
 # 5 is ^ (**)
 # we reserve 0 for no operation
 operations = list(range(1, 6, 1))
+op_dict = {'1': '+', '2': '-', '3': '*', '4': '/', '5': '**', '-2': '(', '-3': ')'}
 
 # input = str(input('Enter a 4-digit year (e.g., 2023)'))
 input='2023'
@@ -55,14 +56,40 @@ operations_perm = []
 int_order = []
 int_value = []
 
-print(p_perm[0][0][0])
+#print(p_perm[0])
 
 # custom function to calculate operation perms
-# def get_op_perms(p_ls, r): # takes in current p list and r parameter (size of groups)
-#     for p_tuples in p_ls: # get all tuples in p
-#         for p_tuple in p_tuples: # iterate through each p_tuple
-#             for j, p in p_tuple: # iterate through each element in p_tuple
-#             # if 1st index of p_tuple is 
+def get_op_perms(p_ls, input): # takes in current p list and input numbers
+    op_temp_all_f = [] # list to hold formatted op_temps
+
+    def temp_format(op_temp): # nested function to format the op_temps from [(2), (1, 2, 3, 4, 5), (0)] => [(2, 1, 0), (2, 2, 0), etc]
+        for op_tuple in op_temp:
+            temp = []
+            for l in operations:
+                if len(op_tuple) ==1: # if just a single number
+                    temp.append(op_tuple[0])
+                else:
+                    temp.append(op_tuple[l])
+        return temp
+
+    def is_leading_0(op_temp): # call function to check if leading 0s; if true, then call int_split
+
+    def split_int()
+
+    def compute_val()
+
+
+    for p_tuple in p_ls:
+        op_temp = []
+        for k, p in enumerate(p_tuple):
+            if (p==0):
+                op_temp.append((0))
+            elif (k == 0) and (p==-1):
+                op_temp.append((2))
+            else:
+                op_temp.append((i for i in operations))
+        
+
 
 
 # for i, p in enumerate(p_perm):
