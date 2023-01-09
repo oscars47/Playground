@@ -59,8 +59,10 @@ int_value = []
 #print(p_perm[0])
 
 # custom function to calculate operation perms
-def get_op_perms(p_ls, input=0): # takes in current p list and input numbers
-    op_temp_all_f = [] # list to hold formatted op_temps
+def update(p_ls, input=0): # takes in current p list and input numbers
+    op_total = [] # finalized list of all formatted op_temps
+    int_order_temp = [] # list to hold integers broken up by operations
+    int_val_temp = [] # list to hold computations for the integers and the operations
 
     def temp_format(op_temp): # nested function to format the op_temps from [(2), (1, 2, 3, 4, 5), (0)] => [(2, 1, 0), (2, 2, 0), etc]
         temp_all = []
@@ -93,8 +95,6 @@ def get_op_perms(p_ls, input=0): # takes in current p list and input numbers
             # get unique
             choice_perm_all = list(set(choice_perm_all))
             # print(choice_perm_all)
-
-
 
             # print('op_temp', op_temp)
             #print('choice perm', choice_perm)
@@ -131,19 +131,21 @@ def get_op_perms(p_ls, input=0): # takes in current p list and input numbers
                 op_temp.append([2])
             else:
                 op_temp.append([i for i in operations])
-        #print(op_temp)
-        op_temp_all_f.append(temp_format(op_temp)) # append the formatted list of op lists
-        #print(temp_format(op_temp))
+        # get formatted op_temp
+        op_temp_f = temp_format(op_temp)
+
+    # now go through each list of op_temps
         
 
-# call get_op_perms for all inputs and all perms-----------------
-# for inp in input_perm:
-for i, p in enumerate(p_perm):
-    get_op_perms(p)
+# call the main driver function-----------------
+def run():
+    # for inp in input_perm:
+    for p_ls in p_perm:
+        update(p_ls)
 
 # print(operations_perm[-1])
 
-
+run()
 
 
 tf = time.time()
