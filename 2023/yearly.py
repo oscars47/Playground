@@ -52,9 +52,9 @@ p_perm.append([tuple(p4)])
 
 # now figure out possible operations, the integers to be used in the calcultations, and the final answer
 # for the first two, we use list of list of tuples; for the value, just list of lists of integer
-operations_perm = []
-int_order = []
-int_value = []
+op_perm_all = []
+int_order_all = []
+int_val_all = []
 
 #print(p_perm[0])
 
@@ -150,6 +150,13 @@ def update(p_ls, input=0): # takes in current p list and input numbers
                     int_split_temp = split_int(temp, input) # get the split integers
                     int_val = compute_int_val(int_split_temp, temp) # compute the integer result
                     if compute_pass(int_val): # if it passes then we can check it against existing results
+                        # see if it doesn't already exist; if so, then add all elements
+                        if int_val_all.count(int_val) == 0:
+                            int_val_all.append(int_val)
+                            int_order_all.append(int_split_temp)
+                            op_perm_all.append(temp)
+                        else: # it does exist, so compare # of operations
+                            val_index = int_val_all.index(int_val)
 
 
         
