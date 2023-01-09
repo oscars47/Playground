@@ -60,9 +60,9 @@ int_value = []
 
 # custom function to calculate operation perms
 def update(p_ls, input=0): # takes in current p list and input numbers
-    op_total = [] # finalized list of all formatted op_temps
-    int_order_temp = [] # list to hold integers broken up by operations
-    int_val_temp = [] # list to hold computations for the integers and the operations
+    # op_total = [] # finalized list of all formatted op_temps
+    # int_order_temp = [] # list to hold integers broken up by operations
+    # int_val_temp = [] # list to hold computations for the integers and the operations
 
     def temp_format(op_temp): # nested function to format the op_temps from [(2), (1, 2, 3, 4, 5), (0)] => [(2, 1, 0), (2, 2, 0), etc]
         temp_all = []
@@ -114,9 +114,9 @@ def update(p_ls, input=0): # takes in current p list and input numbers
         return temp_all
 
 
-    # def is_leading_0(op_temp): # call function to check if leading 0s; if true, then call int_split
+    def is_not_leading_0(op_temp): # call function to check if no leading 0s; if true, then call int_split
 
-    # def split_int()
+    def split_int(op_temp, input):
 
     # def compute_val()
     # want only unique
@@ -133,7 +133,9 @@ def update(p_ls, input=0): # takes in current p list and input numbers
                 op_temp.append([i for i in operations])
         # get formatted op_temp
         op_temp_f = temp_format(op_temp)
-
+        for temp in op_temp_f:
+            if is_not_leading_0(temp):
+                int_split_temp = split_int(temp, input)
     # now go through each list of op_temps
         
 
