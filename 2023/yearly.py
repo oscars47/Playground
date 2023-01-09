@@ -118,6 +118,11 @@ def update(p_ls, input=0): # takes in current p list and input numbers
 
     def split_int(op_temp, input):
 
+    def compute_int_val(int_split_temp, op_temp):
+    
+    def compute_pass(int_val):
+        return ((int(int_val) - int_val == 0) and (int_val >= 1) and (int_val <= 100)) # conditions stated in problem
+
     # def compute_val()
     # want only unique
     p_ls = list(set(p_ls))
@@ -136,6 +141,8 @@ def update(p_ls, input=0): # takes in current p list and input numbers
         for temp in op_temp_f:
             if is_not_leading_0(temp):
                 int_split_temp = split_int(temp, input)
+                int_val = compute_int_val(int_split_temp, temp)
+                if compute_pass(int_val)
     # now go through each list of op_temps
         
 
