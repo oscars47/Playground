@@ -58,8 +58,10 @@ int_val_all = []
 
 #print(p_perm[0])
 
+# function to 
+
 # custom function to calculate operation perms
-def update(p_ls, input=0): # takes in current p list and input numbers
+def update(p_ls, inp): # takes in current p list and input numbers
     # op_total = [] # finalized list of all formatted op_temps
     # int_order_temp = [] # list to hold integers broken up by operations
     # int_val_temp = [] # list to hold computations for the integers and the operations
@@ -144,19 +146,27 @@ def update(p_ls, input=0): # takes in current p list and input numbers
                 # check for parentheses: if vector has len > 0 then we can append
     
         
-        for temp in op_temp_f: # go through and compute
-            if len(temp) > 0:
-                if is_not_leading_0(temp): # if splitting doesn't result in leading 0s
-                    int_split_temp = split_int(temp, input) # get the split integers
-                    int_val = compute_int_val(int_split_temp, temp) # compute the integer result
+        for op_temp in op_temp_f: # go through and compute
+            if len(op_temp) > 0:
+                if is_not_leading_0(op_temp): # if splitting doesn't result in leading 0s
+                    int_split_temp = split_int(op_temp, inp) # get the split integers
+                    int_val = compute_int_val(int_split_temp, op_temp) # compute the integer result
                     if compute_pass(int_val): # if it passes then we can check it against existing results
                         # see if it doesn't already exist; if so, then add all elements
                         if int_val_all.count(int_val) == 0:
                             int_val_all.append(int_val)
                             int_order_all.append(int_split_temp)
-                            op_perm_all.append(temp)
+                            op_perm_all.append(op_temp)
                         else: # it does exist, so compare # of operations
                             val_index = int_val_all.index(int_val)
+                            op_temp_original = op_perm_all[val_index]
+                            if len(op_temp) < len(op_temp_original): # if we can use fewer # of operations, then replace the entry
+                                op_perm_all[val_index] = op_temp
+                                int_order_all[val_index] = int_split_temp
+                            elif len(op_temp) == len(op_temp_original): # if same length, then if new order matches order in year, choose that
+                                if inp == input_ls:
+                                    op_perm_all[val_index] = op_temp
+                                    int_order_all[val_index] = int_split_temp
 
 
         
