@@ -128,9 +128,8 @@ def update(p_ls, inp): # takes in current p list and input numbers
         #print('temp all', temp_all)
         return temp_all
 
-
-    def is_not_leading_0(op_temp, inp): # call function to check if no leading 0s; if true, then call int_split
-        # inp_str = [str(a) for a in inp]
+    # helper function to compute string representation of split integers
+    def parse_split_str(op_temp, inp):
         int_split_str = [] # list to hold split integers as strings
         for d, op in op_temp:
             temp_split = ''
@@ -139,11 +138,23 @@ def update(p_ls, inp): # takes in current p list and input numbers
             else: # append temp_split to int_split_str and move on
                 temp_split+=inp[d]
                 int_split_str.append(temp_split)
+        return int_split_str
 
+    def is_not_leading_0(op_temp, inp): # call function to check if no leading 0s; if true, then call int_split
+        int_split_str = parse_split_str(op_temp, inp)
+        for int_split in int_split_str:
+            if (int_split[0]=='0') and (len(int_split[0]) > 1): # if first index is 0 of multicharacter integer, then return false: i.e. there IS a leading 0
+                return False
+        return True # if we haven't returned False, it must be True
+        
 
     def check_paren(op_temp, inp): # function to return a list of parenthesis variations
 
-    def split_int(op_temp, inp):
+    def split_int(op_temp, inp): # asssumes not leading 0
+        int_split_str = parse_split_str(op_temp, inp)
+        int_split_int = [] # new list to hold the integer versions
+        for int_split in int_split_str:
+            int_split_int.append(int(int_split))
 
     def compute_int_val(int_split_temp, op_temp):
         eqn = build_eq(int_split_temp, op_temp)
