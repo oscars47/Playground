@@ -129,9 +129,15 @@ def update(p_ls, inp): # takes in current p list and input numbers
         return temp_all
 
 
-    def is_not_leading_0(op_temp): # call function to check if no leading 0s; if true, then call int_split
+    def is_not_leading_0(op_temp, inp): # call function to check if no leading 0s; if true, then call int_split
+        inp_str = [str(a) for a in inp]
+        for d, op in op_temp:
+            if op==0:
+                
 
-    def split_int(op_temp, input):
+    def check_paren(op_temp, inp): # function to return a list of parenthesis variations
+
+    def split_int(op_temp, inp):
 
     def compute_int_val(int_split_temp, op_temp):
         eqn = build_eq(int_split_temp, op_temp)
@@ -144,6 +150,7 @@ def update(p_ls, inp): # takes in current p list and input numbers
             return value
         except:
             print("invalid equation:", eqn)
+            return -1 # return a value that will get filtered out by compute_pass
     
     def compute_pass(int_val):
         return ((int(int_val) - int_val == 0) and (int_val >= 1) and (int_val <= 100)) # conditions stated in problem
@@ -203,7 +210,6 @@ def run():
     for p_ls in p_perm:
         update(p_ls, inp)
 
-# print(operations_perm[-1])
 
 run()
 
