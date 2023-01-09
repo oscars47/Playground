@@ -130,10 +130,16 @@ def update(p_ls, inp): # takes in current p list and input numbers
 
 
     def is_not_leading_0(op_temp, inp): # call function to check if no leading 0s; if true, then call int_split
-        inp_str = [str(a) for a in inp]
+        # inp_str = [str(a) for a in inp]
+        int_split_str = [] # list to hold split integers as strings
         for d, op in op_temp:
-            if op==0:
-                
+            temp_split = ''
+            if (op==0) or ((op != 0) and (d == 0)): # continue appending to the temp so long as this holds
+                temp_split+=inp[d]
+            else: # append temp_split to int_split_str and move on
+                temp_split+=inp[d]
+                int_split_str.append(temp_split)
+
 
     def check_paren(op_temp, inp): # function to return a list of parenthesis variations
 
