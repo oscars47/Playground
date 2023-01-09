@@ -7,8 +7,11 @@
 #                       preference for fewer operations; with the same number of operations prefer the order of the year.
 ###
 
-import time # to log how long comoputations take
+import time # to log how long computations take
 from itertools import permutations # to get permutations
+from sympy import solve # for solving string equations
+from sympy.abc import x
+from sympy.parsing.sympy_parser import parse_expr
 
 # define list of operations
 # 1 is +
@@ -58,7 +61,17 @@ int_val_all = []
 
 #print(p_perm[0])
 
-# function to 
+# function to build  equation in strings
+def build_eq(int_split_temp, op_temp):
+    eqn = ""
+    for t, op in enumerate(op_temp):
+        if op==0:
+            eqn.append(int_split_temp[t])
+        else:
+            eqn.append(op_dict[str(op)])
+    
+    return eqn # note to actually solve this need to add 'x=' to beginning and call the compute function
+
 
 # custom function to calculate operation perms
 def update(p_ls, inp): # takes in current p list and input numbers
@@ -112,7 +125,7 @@ def update(p_ls, inp): # takes in current p list and input numbers
                         temp.append(choice[c])
                         c+=1
                 temp_all.append(temp) # append to main list
-        print('temp all', temp_all)
+        #print('temp all', temp_all)
         return temp_all
 
 
@@ -121,6 +134,16 @@ def update(p_ls, inp): # takes in current p list and input numbers
     def split_int(op_temp, input):
 
     def compute_int_val(int_split_temp, op_temp):
+        eqn = build_eq(int_split_temp, op_temp)
+        eqn = "x="+eqn
+        # the code below in this function is adapted from https://stackoverflow.com/questions/30775453/converting-a-string-into-equation-and-resolve-it
+        try:
+            lhs =  parse_expr(eqn.split("=")[0])
+            rhs =  parse_expr(eqn.split("=")[1])
+            value = solve(lhs-rhs)
+            return value
+        except:
+            print("invalid equation:", eqn)
     
     def compute_pass(int_val):
         return ((int(int_val) - int_val == 0) and (int_val >= 1) and (int_val <= 100)) # conditions stated in problem
@@ -143,7 +166,9 @@ def update(p_ls, inp): # takes in current p list and input numbers
         
         for temp in op_temp_f: # check each of these permutations and add paranetheses
             if len(temp) > 0:
-                # check for parentheses: if vector has len > 0 then we can append
+                if is_not_leading_0(op_temp):
+                    # check for parentheses: if vector has len > 0 then we can append
+                    paren_ls = check_paren(op_temp, inp)
     
         
         for op_temp in op_temp_f: # go through and compute
@@ -174,8 +199,9 @@ def update(p_ls, inp): # takes in current p list and input numbers
 # call the main driver function-----------------
 def run():
     # for inp in input_perm:
+    inp = input_perm[0]
     for p_ls in p_perm:
-        update(p_ls)
+        update(p_ls, inp)
 
 # print(operations_perm[-1])
 
