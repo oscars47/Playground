@@ -138,12 +138,20 @@ def update(p_ls, input=0): # takes in current p list and input numbers
                 op_temp.append([i for i in operations])
         # get formatted op_temp
         op_temp_f = temp_format(op_temp)
-        for temp in op_temp_f:
-            if is_not_leading_0(temp):
-                int_split_temp = split_int(temp, input)
-                int_val = compute_int_val(int_split_temp, temp)
-                if compute_pass(int_val)
-    # now go through each list of op_temps
+        
+        for temp in op_temp_f: # check each of these permutations and add paranetheses
+            if len(temp) > 0:
+                # check for parentheses: if vector has len > 0 then we can append
+    
+        
+        for temp in op_temp_f: # go through and compute
+            if len(temp) > 0:
+                if is_not_leading_0(temp): # if splitting doesn't result in leading 0s
+                    int_split_temp = split_int(temp, input) # get the split integers
+                    int_val = compute_int_val(int_split_temp, temp) # compute the integer result
+                    if compute_pass(int_val): # if it passes then we can check it against existing results
+
+
         
 
 # call the main driver function-----------------
