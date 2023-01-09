@@ -150,11 +150,14 @@ def update(p_ls, inp): # takes in current p list and input numbers
 
     def check_paren(op_temp, inp): # function to return a list of parenthesis variations
 
+        
+
     def split_int(op_temp, inp): # asssumes not leading 0
         int_split_str = parse_split_str(op_temp, inp)
         int_split_int = [] # new list to hold the integer versions
         for int_split in int_split_str:
             int_split_int.append(int(int_split))
+        return int_split_int
 
     def compute_int_val(int_split_temp, op_temp):
         eqn = build_eq(int_split_temp, op_temp)
