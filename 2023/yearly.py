@@ -10,7 +10,7 @@
 import time # to log how long computations take
 from itertools import permutations # to get permutations
 from more_itertools import locate # get all locations of particular value in list
-from sympy import solve # for solving string equations
+from sympy import solve, simplify # for solving string equations; for dealing with complex numbers
 from sympy.abc import x
 from sympy.parsing.sympy_parser import parse_expr
 
@@ -25,7 +25,7 @@ operations = list(range(1, 6, 1))
 op_dict = {'1': '+', '2': '-', '3': '*', '4': '/', '5': '**', '-2': '(', '-3': ')'}
 
 # input = str(input('Enter a 4-digit year (e.g., 2023)'))
-input='2023'
+input='2022'
 # convert to list of integers
 input_ls = [int(c) for c in input]
 
@@ -62,19 +62,43 @@ int_val_all = []
 
 #print(p_perm[0])
 
+
+
 # function to build  equation in strings
 def build_eq(int_split_temp, op_temp):
     eqn = ""
-    print('int split', int_split_temp)
-    split_index = 0 # index to increment for split index
-    for t, op in enumerate(op_temp):
-        if op==0:
-            eqn += str(int_split_temp[split_index])
-            split_index+=1
+    split_index = 0
+    a = 0
+    while a < len(op_temp):
+        op = op_temp[a]
+        if op==0: # if hit 0, keep going until no more 0s
+            for b in range(a+1, len(op_temp), 1):
+                if (op_temp[b] != 0) or (b==len(op_temp)-1):
+                    eqn+=str(int_split_temp[split_index])
+                    split_index+=1
+                    a+=(b-a)-1
         else:
             eqn+=str(op_dict[str(op)])
-    
-    return eqn # note to actually solve this need to add 'x=' to beginning and call the compute function
+            if a == len(op_temp)-1: # if at the end, add the opreation and then the digit
+                eqn+=str(int_split_temp[split_index])
+                break
+            elif op_temp[a+1]==0:
+                # if next one is 0, keep going until we run out of the 0s
+                for b in range(a+1, len(op_temp), 1):
+                    if (op_temp[b] !=0) or (b==len(op_temp)-1):
+                        eqn+=str(int_split_temp[split_index])
+                        split_index+=1
+                        a+=(b-a)-1
+            elif op != -3:
+                if (op == -2) or (op_temp[a+1] == -2): # if we have open paren (
+                    eqn+=str(op_dict[str(op_temp[a+1])])
+                    a+=1
+                    
+                eqn+=str(int_split_temp[split_index])
+                split_index+=1
+        a+=1
+    return eqn
+ # note to actually solve this need to add 'x=' to beginning and call the compute function
 
 
 # custom function to calculate operation perms
@@ -82,7 +106,7 @@ def update(p_ls, inp): # takes in current p list and input numbers
     # op_total = [] # finalized list of all formatted op_temps
     # int_order_temp = [] # list to hold integers broken up by operations
     # int_val_temp = [] # list to hold computations for the integers and the operations
-
+    op_temp_f_all = [] # list to hold all formatted op temps, including parenthese
     def temp_format(op_temp): # nested function to format the op_temps from [(2), (1, 2, 3, 4, 5), (0)] => [(2, 1, 0), (2, 2, 0), etc]
         temp_all = []
         # get count of full operations lists; this determines the r value for permutations
@@ -136,10 +160,18 @@ def update(p_ls, inp): # takes in current p list and input numbers
     
     def parse_split_str(op_temp, inp):
         int_split_str = [] # list to hold split integers as strings
+        # don't care about parentheses so remove them
+        op_temp_cleaned = []
+        for op in op_temp:
+            if not(op in [-2, -3]):
+                op_temp_cleaned.append(op)
+
+        op_temp = op_temp_cleaned
         op_int = 0
         while op_int < len(op_temp):
             temp_split = ''
             current_op = op_temp[op_int]
+            # next_op = op_temp[op_int+1]
             # if current_op ==0: # if it's 0, figure out how many more 0s so inp values to keep appending
             temp_split+=str(inp[op_int])
             for op_next_int in range(op_int+1, len(op_temp), 1):
@@ -160,6 +192,9 @@ def update(p_ls, inp): # takes in current p list and input numbers
                     int_split_str.append(temp_split)
                     op_int+=(op_next_int-op_int)-1
                     break
+            # else:
+            #     temp_split+=str(inp[op_int])
+            #     int_split_str.append(temp_split)
             
             op_int+=1
 
@@ -215,26 +250,31 @@ def update(p_ls, inp): # takes in current p list and input numbers
     def compute_int_val(int_split_temp, op_temp):
         eqn = build_eq(int_split_temp, op_temp)
         eqn = "x="+eqn
+        #print(eqn)
         # the code below in this function is adapted from https://stackoverflow.com/questions/30775453/converting-a-string-into-equation-and-resolve-it
         try:
             lhs =  parse_expr(eqn.split("=")[0])
             rhs =  parse_expr(eqn.split("=")[1])
-            value = solve(lhs-rhs)
+            value = solve(lhs-rhs)[0]
+            #print(value)
             return value
         except:
-            print("invalid equation:", eqn)
+            #print("invalid equation:", eqn)
             return -1 # return a value that will get filtered out by compute_pass
-    
-    def compute_pass(int_val):
-        return ((int(int_val) - int_val == 0) and (int_val >= 1) and (int_val <= 100)) # conditions stated in problem
 
     # function to count op number; don't count -2 or -3
     def count_num_ops(op_temp):
         c = 0 # initialize count
         for op in op_temp:
-            if (op != -2) and (op != -3): # if not ( or ), then increment count
+            if (op != -2) and (op != -3) and (op != 0): # if not ( or ), then increment count
                 c+=1
         return c
+    
+    def compute_pass(int_val):
+        if simplify(int_val).is_real:
+            return ((int(int_val) - int_val == 0) and (int_val >= 1) and (int_val <= 100)) # conditions stated in problem
+        else:
+            return False # not real, so not integer
 
     # want only unique
     p_ls = list(set(p_ls))
@@ -250,13 +290,17 @@ def update(p_ls, inp): # takes in current p list and input numbers
                 op_temp.append([i for i in operations])
         # get formatted op_temp
         op_temp_f = temp_format(op_temp)
+        #print(op_temp_f)
         
-        for temp in op_temp_f: # check each of these permutations and add paranetheses
-            if len(temp) > 0:
+        for op_temp in op_temp_f: # check each of these permutations and add paranetheses
+            if len(op_temp) > 0:
                 if is_not_leading_0(op_temp, inp):
                     # check for parentheses: if vector has len > 0 then we can append
+                    #print(op_temp)
                     paren_ls = check_paren(op_temp)
+                    #print(paren_ls)
                     if len(paren_ls) >=1: # if have at least 1 paren variation, add it to main list
+                        #print(paren_ls)
                         for paren_temp in paren_ls:
                             op_temp_f.append(paren_temp)
     
@@ -266,6 +310,7 @@ def update(p_ls, inp): # takes in current p list and input numbers
                 if is_not_leading_0(op_temp, inp): # if splitting doesn't result in leading 0s
                     int_split_temp = split_int(op_temp, inp) # get the split integers
                     int_val = compute_int_val(int_split_temp, op_temp) # compute the integer result
+                    #print(int_val)
                     if compute_pass(int_val): # if it passes then we can check it against existing results
                         # see if it doesn't already exist; if so, then add all elements
                         if int_val_all.count(int_val) == 0:
@@ -299,7 +344,7 @@ def print_results():
 # call the main driver function-----------------
 def run():
     for inp in input_perm:
-    # inp = input_perm[0]
+    #inp = input_perm[0]
         for p_ls in p_perm:
             update(p_ls, inp)
 
