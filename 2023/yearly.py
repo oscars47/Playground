@@ -9,6 +9,7 @@
 
 import time # to log how long computations take
 from itertools import permutations # to get permutations
+from more_itertools import locate # get all locations of particular value in list
 from sympy import solve # for solving string equations
 from sympy.abc import x
 from sympy.parsing.sympy_parser import parse_expr
@@ -148,9 +149,37 @@ def update(p_ls, inp): # takes in current p list and input numbers
         return True # if we haven't returned False, it must be True
         
 
-    def check_paren(op_temp, inp): # function to return a list of parenthesis variations
+    def check_paren(op_temp): # function to return a list of parenthesis variations
+        # initialize parentheses list
+        op_paren = []
+        # subfunction to check ok'd prior characters
+        def get_paren_temp(op_index_ls, ok_ls):
+            for index in op_index_ls:
+                for s in range(index-1, -1, -1):
+                    if op_temp[s] in ok_ls: # if the character is in ok list, add to paren list
+                        op_paren_temp = [op for op in op_temp]
+                        op_paren_temp.insert(index, -3) # add closing paren
+                        op_paren_temp.insert(s, -2) # add opening paren
+                        op_paren.append(op_paren_temp) # add result to op_paren list
+        # we need to compute op_indices lists for *, /, ^ and do check ok separately
+        # for * and /, ok list includes +, -, ^
+        multi_divide_ok = [1, 2, 5]
+        # for ^, we get +, -, *, /
+        exp_ok = [1, 2, 3, 4]
+        mult_index_ls = list(locate(op_temp, lambda x: x==3))
+        divide_index_ls = list(locate(op_temp, lambda x: x==4))
+        exp_index_ls = list(locate(op_temp, lambda x: x==5))
 
-        
+        # check for *, /, ^
+        if len(mult_index_ls) >= 1:
+            get_paren_temp(mult_index_ls, multi_divide_ok)
+        if len(divide_index_ls) >=1:
+            get_paren_temp(divide_index_ls, multi_divide_ok)
+        if len(exp_index_ls) >=1:
+            get_paren_temp(exp_index_ls, exp_ok)
+
+        return op_paren # return the final list
+
 
     def split_int(op_temp, inp): # asssumes not leading 0
         int_split_str = parse_split_str(op_temp, inp)
@@ -175,7 +204,14 @@ def update(p_ls, inp): # takes in current p list and input numbers
     def compute_pass(int_val):
         return ((int(int_val) - int_val == 0) and (int_val >= 1) and (int_val <= 100)) # conditions stated in problem
 
-    # def compute_val()
+    # function to count op number; don't count -2 or -3
+    def count_num_ops(op_temp):
+        c = 0 # initialize count
+        for op in op_temp:
+            if (op != -2) and (op != -3): # if not ( or ), then increment count
+                c+=1
+        return c
+
     # want only unique
     p_ls = list(set(p_ls))
     #print(p_ls)
@@ -195,7 +231,10 @@ def update(p_ls, inp): # takes in current p list and input numbers
             if len(temp) > 0:
                 if is_not_leading_0(op_temp):
                     # check for parentheses: if vector has len > 0 then we can append
-                    paren_ls = check_paren(op_temp, inp)
+                    paren_ls = check_paren(op_temp)
+                    if len(paren_ls) >=1: # if have at least 1 paren variation, add it to main list
+                        for paren_temp in paren_ls:
+                            op_temp_f.append(paren_temp)
     
         
         for op_temp in op_temp_f: # go through and compute
@@ -212,23 +251,36 @@ def update(p_ls, inp): # takes in current p list and input numbers
                         else: # it does exist, so compare # of operations
                             val_index = int_val_all.index(int_val)
                             op_temp_original = op_perm_all[val_index]
-                            if len(op_temp) < len(op_temp_original): # if we can use fewer # of operations, then replace the entry
+                            current_num_ops = count_num_ops(op_temp)
+                            original_num_ops = count_num_ops(op_temp_original)
+                            if current_num_ops < original_num_ops: # if we can use fewer # of operations, then replace the entry
                                 op_perm_all[val_index] = op_temp
                                 int_order_all[val_index] = int_split_temp
-                            elif len(op_temp) == len(op_temp_original): # if same length, then if new order matches order in year, choose that
+                            elif current_num_ops < original_num_ops: # if same length, then if new order matches order in year, choose that
                                 if inp == input_ls:
                                     op_perm_all[val_index] = op_temp
                                     int_order_all[val_index] = int_split_temp
+                            # else if it's bigger, then don't do anything -- keep original
+# function to output the results
+def print_results():
+    print('Found %i solutions:' %len(int_val_all))
+    for i in range(len(int_val_all)):
+        int_val = int_val_all[i]
+        int_split = int_order_all[i]
+        op_temp = op_perm_all[i]
+        eqn = build_eq(int_split, op_temp)
+        print(str(int_val) + ' = ' + eqn)
 
-
-        
 
 # call the main driver function-----------------
 def run():
-    # for inp in input_perm:
-    inp = input_perm[0]
-    for p_ls in p_perm:
-        update(p_ls, inp)
+    for inp in input_perm:
+    # inp = input_perm[0]
+        for p_ls in p_perm:
+            update(p_ls, inp)
+
+    # now call printing function for each value in the op_perm_all, int_order_all, and int_val_all
+    print_results()
 
 
 run()
