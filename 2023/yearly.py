@@ -65,11 +65,14 @@ int_val_all = []
 # function to build  equation in strings
 def build_eq(int_split_temp, op_temp):
     eqn = ""
+    print('int split', int_split_temp)
+    split_index = 0 # index to increment for split index
     for t, op in enumerate(op_temp):
         if op==0:
-            eqn.append(int_split_temp[t])
+            eqn += str(int_split_temp[split_index])
+            split_index+=1
         else:
-            eqn.append(op_dict[str(op)])
+            eqn+=str(op_dict[str(op)])
     
     return eqn # note to actually solve this need to add 'x=' to beginning and call the compute function
 
@@ -130,15 +133,36 @@ def update(p_ls, inp): # takes in current p list and input numbers
         return temp_all
 
     # helper function to compute string representation of split integers
+    
     def parse_split_str(op_temp, inp):
         int_split_str = [] # list to hold split integers as strings
-        for d, op in op_temp:
+        op_int = 0
+        while op_int < len(op_temp):
             temp_split = ''
-            if (op==0) or ((op != 0) and (d == 0)): # continue appending to the temp so long as this holds
-                temp_split+=inp[d]
-            else: # append temp_split to int_split_str and move on
-                temp_split+=inp[d]
-                int_split_str.append(temp_split)
+            current_op = op_temp[op_int]
+            # if current_op ==0: # if it's 0, figure out how many more 0s so inp values to keep appending
+            temp_split+=str(inp[op_int])
+            for op_next_int in range(op_int+1, len(op_temp), 1):
+                next_op = op_temp[op_next_int]
+                
+                if (op_next_int == len(op_temp)-1):
+                    if next_op==0:
+                        temp_split+=str(inp[op_next_int])
+                        int_split_str.append(temp_split)
+                    else:
+                        int_split_str.append(temp_split)
+                        int_split_str.append(str(inp[op_next_int]))
+                    op_int+=(op_next_int-op_int)
+                    break
+                elif next_op == 0:
+                    temp_split+=str(inp[op_next_int])
+                else: # it's not 0
+                    int_split_str.append(temp_split)
+                    op_int+=(op_next_int-op_int)-1
+                    break
+            
+            op_int+=1
+
         return int_split_str
 
     def is_not_leading_0(op_temp, inp): # call function to check if no leading 0s; if true, then call int_split
@@ -229,7 +253,7 @@ def update(p_ls, inp): # takes in current p list and input numbers
         
         for temp in op_temp_f: # check each of these permutations and add paranetheses
             if len(temp) > 0:
-                if is_not_leading_0(op_temp):
+                if is_not_leading_0(op_temp, inp):
                     # check for parentheses: if vector has len > 0 then we can append
                     paren_ls = check_paren(op_temp)
                     if len(paren_ls) >=1: # if have at least 1 paren variation, add it to main list
@@ -239,7 +263,7 @@ def update(p_ls, inp): # takes in current p list and input numbers
         
         for op_temp in op_temp_f: # go through and compute
             if len(op_temp) > 0:
-                if is_not_leading_0(op_temp): # if splitting doesn't result in leading 0s
+                if is_not_leading_0(op_temp, inp): # if splitting doesn't result in leading 0s
                     int_split_temp = split_int(op_temp, inp) # get the split integers
                     int_val = compute_int_val(int_split_temp, op_temp) # compute the integer result
                     if compute_pass(int_val): # if it passes then we can check it against existing results
