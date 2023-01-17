@@ -240,7 +240,7 @@ for (key, value) in d1
 end
 
 # set-----------
-# only contains unique
+# only contains unique elements
 st1 = Set(["Jim", "Pam", "Jim"])
 println(st1)
 
@@ -254,12 +254,207 @@ println(union(st1, st2))
 
 # intersection
 println(intersect(st1, st2))
-println(setdiff(st1, st2))
+println(setdiff(st1, st2)) # in first but not second
 
 
 
 # functions!! ---------------
 getSum(x,y) = x+y
-x,y=1,2
+x,y=1,2 # defining different variables
 # for string formatting codes see my discord julia-misc
 @printf("%d + %d = %d\n", x, y, getSum(x, y))
+
+# multiple expression function
+function canIVote(age=16)
+    if age > 18
+        println("Can vote")
+    else
+        println("Can't vote")
+    end
+end
+
+canIVote(43)
+
+v1 = 5
+function changeV1()
+    global v1 = 10 # use global to change variables outside function
+end
+changeV1()
+println(v1)
+
+function getSum2(args...) # include multiple arguments
+    sum =0
+    for a in args
+        sum+=a
+    end
+    println(sum)
+end
+getSum2(1, 2, 3, 4)
+
+# can return multiple values
+function next2(val)
+    return (val+1, val+2)
+end
+println(next2(4))
+
+# functions that return functions
+function makeMultiplier(num)
+    return function(x) return x*num end
+end
+mult3 = makeMultiplier(3)
+println(mult3(6))
+
+# handle different types of arguments
+function getSum3(num1::Number, num2:: Number)
+    return num1 + num2
+end
+
+function getSum3(num1::String, num2:: String)
+    return parse(Int32, num1) + parse(Int32, num2) # parse to convert from str to int
+end
+
+println("5 + 4 =  ", getSum3(5, 4))
+println("5 + 4 =  ", getSum3("5", "4"))
+
+# anonymous function
+v2 = map(x -> x*x, [1, 2, 3]) # map applies function to each value like lambda
+println(v2)
+
+v3 = map((x, y) -> x + y, [1, 2], [3, 4])
+println(v3)
+
+# reduce uses function multiple times to get to single answer
+v4 = reduce(+, 1:100)
+println(v4)
+
+sentence = "This is a string"
+sArray = split(sentence)
+longest = reduce((x, y) -> length(x) > length(y) ? x : y, sArray)
+println(longest)
+
+# math specific stuff-----
+# can have implicit multiplication
+x  =5
+println(2x)
+
+# dot operator: element-wise
+a13= [1, 2, 3]
+println(a13 .^ 3)
+
+# enumerators
+@enum Color begin
+    red = 1
+    blue =2
+    green = 3
+end
+favColor = green::Color
+println(favColor)
+
+# symbols------
+# immutable strings that represent variables
+:Derek
+println(:Derek)
+
+d2 = Dict(:pi=>3.14, :e=>2.718)
+println(d2[:pi])
+
+# structs----
+# composite types -- kind of like oop
+struct Customer
+    name::String
+    balance::Float32
+    id::Int
+end
+bob = Customer("bob", 10.50, 123)
+println(bob.name)
+# structs are immutatble: if you want to make it mutable, add "mutable" keyword
+
+# abstract types
+abstract type Animal end
+
+struct Dog <: Animal
+    name::String
+    bark::String
+end
+struct Cat <: Animal
+    name::String
+    meow::String
+end
+
+bowser = Dog("Bowser", "ruff")
+muffin = Cat("Muffin", "Meow")
+
+function makeSound(animal::Dog)
+    println("$(animal.name) says $(animal.bark)") # example of interpolation
+end
+
+function makeSound(animal::Cat)
+    println("$(animal.name) says $(animal.meow)") # example of interpolation
+end
+
+makeSound(bowser)
+makeSound(muffin)
+
+# exception handling and user input----------
+print("Enter num")
+num1 = chomp(readline()) # chomp gets rid of endline
+print("Enter num")
+num2 = chomp(readline()) # chomp gets rid of endline
+
+# check for division by 0
+try
+    val = (parse(Int32, num1)) / (parse(Int32, num2))
+    if val == Inf
+        error("Can't divide by 0")
+    else
+        println(val)
+    end
+catch e
+    println(e)
+end
+
+# read and write from files-------
+# writing file
+open("random2.txt", "w") do file
+    write(file, "here is some random text\n It is great \n")
+end
+# reading file all at once
+open("random2.txt") do file
+    data = read(file, String)
+    println(data)
+end
+# reading file one line at a tme
+open("random2.txt") do file
+    for ln in eachline(file)
+        println(ln)
+    end
+end
+
+# macros------------
+# generate code for you before program is return
+macro doMore(n, exp)
+    quote # quote represents beginning and ending of running code
+        for i = 1:$(esc(n)) # escape hides everything util ready to be executed
+            $(esc(exp))
+        end
+    end
+end
+
+# to run:
+@doMore(2, println("Hello"))
+
+# custom do-while
+macro doWhile(exp)
+    @assert exp.head == :while 
+    esc(quote
+        $(exp.args[2])
+        $exp
+        
+    end )
+end
+
+z = 0
+@doWhile while z < 10
+    global z += 1
+    println(z)
+end
