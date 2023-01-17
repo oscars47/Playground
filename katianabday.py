@@ -46,7 +46,7 @@ def animate_circle(x_all_ls):
             y_current_bottom.append(circle_bottom(value, x_offset, y_offset, radius))
             plt.plot(x_current, y_current_top, color='skyblue') # print top
             plt.plot(x_current, y_current_bottom, color='skyblue') # print bottom
-            plt.pause(.00000001) # add delay to animate
+            plt.pause(1e-9) # add delay to animate
 
 
 # initialize x arrays
