@@ -1,3 +1,5 @@
+# following https://www.youtube.com/watch?v=sE67bP2PnOo&feature=youtu.be
+
 #n.b. use julia name.jl to compile
 
 # import some packages
