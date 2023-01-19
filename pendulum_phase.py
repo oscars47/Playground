@@ -48,6 +48,15 @@ sol = sci.odeint(pendulum, s0, time, args=(L, g))
 fig = plt.figure()  # figsize=(10, 8)
 ax = plt.axes(projection='3d')
 ax.plot3D(sol[:, 0], sol[:, 1], time)
+ax.set_xlabel('$\omega$')
+ax.set_ylabel('$v$')
+ax.set_zlabel('$t$')
+plt.show()
+
+plt.plot(sol[:, 0], sol[:, 1])
+plt.title('Phase space for pendulum, t= ' + str(max_T))
+plt.xlabel('$\omega$')
+plt.ylabel('$v$')
 plt.show()
 
 
