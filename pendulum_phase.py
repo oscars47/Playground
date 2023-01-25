@@ -21,7 +21,7 @@ dt = 0.01
 time = np.arange(0.0, max_T, dt)
 
 # initial conditions
-s0 = [np.pi/2, 0]
+s0 = [2*np.pi/3, 2]
 L = 1
 g = 9.8
 

@@ -24,19 +24,7 @@ p = [1.0, 9.8]
 prob = ODEProblem(pendulum_param!,u0,tspan,p)
 sol = solve(prob)
 println("here")
-<<<<<<< HEAD
-plot(sol)
 
-# x = range(0, 10, 100)
-# y = sin.(x)
-# plot(x, y)
-=======
 plot(sol, title="Pendulum")
 println(sol[2.0])
-
-# x = range(0, 10, 100)
-# y = sin.(x)
-# println("hello")
-# display(plot(x, y))
->>>>>>> e2c7a09217f86331fc9b41958f5f03df7e659875
 readline()
